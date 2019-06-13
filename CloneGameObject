@@ -1,0 +1,65 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor;
+
+public class CloneGameObject : ScriptableWizard
+{
+    public GameObject objectToClone;
+    public GameObject parentObjectForClones;
+    public int rowCount;
+    public int columnCount;
+    public float XAxisSpacing;
+    public float YAxisSpacing;
+    public float ZAxisSpacing;
+
+    private List<GameObject> allClones;
+    private Vector3 cloneTransform;
+
+    [MenuItem("Tools/Clone Game Object")]
+    static void CloneGameObjectWizard()
+    {
+        ScriptableWizard.DisplayWizard<CloneGameObject>("Clone Game Object", "Clone Now");
+    }
+
+    void OnWizardCreate()
+    {
+        cloneRowsOfColumns();
+        setParentObject();
+    }
+
+
+    // Helper Functions
+    void cloneRowsOfColumns()
+    {
+        for (int i = 0; i <= rowCount; i++)
+        {
+            cloneColumns();
+        }
+    }
+
+
+    void setParentObject()
+    {
+        foreach(GameObject clone in allClones)
+        {
+            clone.transform.parent = parentObjectForClones.transform;
+        }
+    }
+
+
+    void cloneColumns()
+    {
+        for (int i = 0; i <= columnCount; i++)
+        {
+            setTransform(i);
+            Instantiate(objectToClone, cloneTransform, objectToClone.transform.rotation, parentObjectForClones.transform);
+        }
+    }
+
+    void setTransform(int counter)
+    {
+        cloneTransform.x = objectToClone.transform.position.x + (XAxisSpacing * counter);
+        cloneTransform.y = objectToClone.transform.position.y + (YAxisSpacing * counter);
+        cloneTransform.z = objectToClone.transform.position.z + (ZAxisSpacing * counter);
+    }
+}
